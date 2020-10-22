@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 public class LoginActivity extends AppCompatActivity
 {
@@ -37,6 +38,7 @@ public class LoginActivity extends AppCompatActivity
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.log_out);
+        Button btnSignup = findViewById(R.id.btnSignUp);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +46,15 @@ public class LoginActivity extends AppCompatActivity
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
                 loginUser(username, password);
+            }
+        });
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick login button");
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+                signUpUser(username, password);
             }
         });
     }
@@ -66,6 +77,26 @@ public class LoginActivity extends AppCompatActivity
 
         });
     }
+    private void signUpUser(final String username, String password)
+    {
+        Log.i(TAG, "Attempting to sign up user " + username);
+
+        ParseUser user = new ParseUser();
+// Set the user's username and password, which can be obtained by a forms
+        user.setUsername(username);
+        user.setPassword(password);
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with Signup", e);
+                }
+                Toast.makeText(LoginActivity.this, "Welcome " + username, Toast.LENGTH_LONG).show();
+                goMainActivity();
+            }
+        });
+    }
+
 
     private void goMainActivity() {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
